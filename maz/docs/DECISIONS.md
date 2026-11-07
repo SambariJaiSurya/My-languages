@@ -86,6 +86,21 @@ This document records the foundational design decisions of the MAZ programming l
 | ADR-70 | OOP | Formalized semantic separation: `extends` vs `include` | Clear architectural division between subtyping and behavioral mixins. |
 | ADR-71 | Types | Syntax modifier `?` designates nullable types | Consistent, compact nullable type syntax. |
 | ADR-72 | Memory | Coherent ownership model bridging GC and manual pointers | Prevents memory safety bugs when pointers interact with garbage collector. |
+| ADR-73 | I/O | Built-in typed & universal input system (`input`, `inputInt`, etc.) | Direct standard console input without external libraries, avoiding C++ `cin >>`. |
+| ADR-74 | Operators | Comprehensive operators, compounds, bitwise, ternary, conversion | Complete expression evaluation and type casting pipeline. |
+| ADR-75 | Control | Advanced control flow: `break`, `continue`, `switch/case`, loop-else | Flexible looping and multi-branch decision structures. |
+| ADR-76 | Scope | Lexical scoping, variable lifetimes, block isolation, explicit global | Clean modular variable management avoiding silent leaks. |
+| ADR-77 | Functions | Lambdas, closures, recursion protection, named & variadic args | Modern functional capabilities alongside procedural paradigms. |
+| ADR-78 | Strings | Comprehensive string manipulation, UTF-8 unicode, escapes, formatting | Complete text processing suite. |
+| ADR-79 | Collections | Arrays (homogeneous, dynamic, multi-dim), maps, sets, map/filter/reduce | Comprehensive high-performance collection abstractions. |
+| ADR-80 | OOP | Destructors, `static`, `this`, `abstract`, `final`, properties, equality | Full-scale object model for complex software architectures. |
+| ADR-81 | Errors | Typed exceptions, multiple catch blocks, `finally`, assertions | Enterprise-grade diagnostic resilience and safe resource cleanup. |
+| ADR-82 | Modules | Granular exports/imports, package registry, dependency locking | Scalable multi-package ecosystem. |
+| ADR-83 | Memory | Stack/heap allocation, ownership transfer, move semantics, pinning | High-performance safe systems programming without GC interference. |
+| ADR-84 | Concurrency | Thread safety, mutexes, channels, cancellation, deadlock detection | Robust parallel execution models. |
+| ADR-85 | OS / Sys | Process management, directory/filesystem APIs, env variables | Full operating system interaction. |
+| ADR-86 | Tooling | Formatter, linter, profiler, source maps, language server protocol | Professional-grade developer tooling suite. |
+| ADR-87 | Security | Sandboxed execution, permissions, cryptographic primitives, cross-target | Production safety and architecture portability. |
 
 ---
 

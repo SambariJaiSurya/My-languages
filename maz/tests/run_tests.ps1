@@ -11,7 +11,11 @@ $total = 0
 foreach ($ex in $examples) {
     $total++
     Write-Host "Testing $($ex.Name)..." -NoNewline
-    $output = & .\maz.exe run $ex.FullName 2>&1
+    if ($ex.Name -eq "06_input.maz") {
+        $output = "Alice`n21`n175.5`ntrue`nAwesome!" | & .\maz.exe run $ex.FullName 2>&1
+    } else {
+        $output = & .\maz.exe run $ex.FullName 2>&1
+    }
     if ($LASTEXITCODE -eq 0) {
         Write-Host " [PASS]" -ForegroundColor Green
         $passed++

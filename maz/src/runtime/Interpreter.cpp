@@ -2,6 +2,9 @@
 #include "../common/Error.hpp"
 #include <iostream>
 #include <chrono>
+#include <string>
+#include <algorithm>
+#include <cctype>
 
 namespace maz {
 
@@ -9,6 +12,13 @@ Interpreter::Interpreter() {
     globals = std::make_shared<Environment>();
     currentEnv = globals;
     registerBuiltins();
+}
+
+static std::string trimString(const std::string& str) {
+    size_t first = str.find_first_not_of(" \t\r\n");
+    if (first == std::string::npos) return "";
+    size_t last = str.find_last_not_of(" \t\r\n");
+    return str.substr(first, (last - first + 1));
 }
 
 void Interpreter::registerBuiltins() {
@@ -32,6 +42,112 @@ void Interpreter::registerBuiltins() {
         return Value(static_cast<double>(duration.count()) / 1000.0);
     };
     globals->define("clock", Value(clockFn), true, false);
+
+    // Rule 73: MAZ Input System
+    // 1. input(prompt?) — Universal input
+    NativeFn inputFn = [](const std::vector<Value>& args) -> Value {
+        if (!args.empty()) {
+            std::cout << args[0].toString() << std::flush;
+        }
+        std::string line;
+        if (!std::getline(std::cin, line)) {
+            line = "";
+        }
+        return Value(line);
+    };
+    globals->define("input", Value(inputFn), true, false);
+
+    // 2. inputInt(prompt?) — Integer input
+    NativeFn inputIntFn = [](const std::vector<Value>& args) -> Value {
+        if (!args.empty()) {
+            std::cout << args[0].toString() << std::flush;
+        }
+        std::string raw;
+        if (!std::getline(std::cin, raw)) {
+            throw MazException(SourceLocation{}, "inputInt(): unexpected end of input");
+        }
+        std::string trimmed = trimString(raw);
+        if (trimmed.empty()) {
+            throw MazException(SourceLocation{}, "inputInt(): expected an integer, but received empty input");
+        }
+        try {
+            size_t idx = 0;
+            int64_t val = std::stoll(trimmed, &idx);
+            if (idx != trimmed.size()) {
+                throw MazException(SourceLocation{}, "inputInt(): invalid integer format '" + trimmed + "'");
+            }
+            return Value(val);
+        } catch (const MazException&) {
+            throw;
+        } catch (...) {
+            throw MazException(SourceLocation{}, "inputInt(): invalid integer format '" + trimmed + "'");
+        }
+    };
+    globals->define("inputInt", Value(inputIntFn), true, false);
+
+    // 3. inputFloat(prompt?) — Floating-point input
+    NativeFn inputFloatFn = [](const std::vector<Value>& args) -> Value {
+        if (!args.empty()) {
+            std::cout << args[0].toString() << std::flush;
+        }
+        std::string raw;
+        if (!std::getline(std::cin, raw)) {
+            throw MazException(SourceLocation{}, "inputFloat(): unexpected end of input");
+        }
+        std::string trimmed = trimString(raw);
+        if (trimmed.empty()) {
+            throw MazException(SourceLocation{}, "inputFloat(): expected a float, but received empty input");
+        }
+        try {
+            size_t idx = 0;
+            double val = std::stod(trimmed, &idx);
+            if (idx != trimmed.size()) {
+                throw MazException(SourceLocation{}, "inputFloat(): invalid floating-point format '" + trimmed + "'");
+            }
+            return Value(val);
+        } catch (const MazException&) {
+            throw;
+        } catch (...) {
+            throw MazException(SourceLocation{}, "inputFloat(): invalid floating-point format '" + trimmed + "'");
+        }
+    };
+    globals->define("inputFloat", Value(inputFloatFn), true, false);
+
+    // 4. inputBool(prompt?) — Boolean input
+    NativeFn inputBoolFn = [](const std::vector<Value>& args) -> Value {
+        if (!args.empty()) {
+            std::cout << args[0].toString() << std::flush;
+        }
+        std::string raw;
+        if (!std::getline(std::cin, raw)) {
+            throw MazException(SourceLocation{}, "inputBool(): unexpected end of input");
+        }
+        std::string trimmed = trimString(raw);
+        std::string lower = trimmed;
+        std::transform(lower.begin(), lower.end(), lower.begin(), [](unsigned char c) { return std::tolower(c); });
+
+        if (lower == "true") {
+            return Value::makeBool(true);
+        } else if (lower == "false") {
+            return Value::makeBool(false);
+        } else {
+            throw MazException(SourceLocation{}, "inputBool(): invalid Boolean '" + trimmed + "' (expected 'true' or 'false')");
+        }
+    };
+    globals->define("inputBool", Value(inputBoolFn), true, false);
+
+    // 5. inputString(prompt?) — String input
+    NativeFn inputStringFn = [](const std::vector<Value>& args) -> Value {
+        if (!args.empty()) {
+            std::cout << args[0].toString() << std::flush;
+        }
+        std::string line;
+        if (!std::getline(std::cin, line)) {
+            line = "";
+        }
+        return Value(line);
+    };
+    globals->define("inputString", Value(inputStringFn), true, false);
 }
 
 void Interpreter::interpret(const std::shared_ptr<Program>& program) {

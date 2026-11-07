@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fully dynamic variables using `dyn`.
   - Immutable bindings with `const`.
   - Built-in standard output: `display(...)`.
+  - Built-in input system (Rule 73): `input()`, `inputInt()`, `inputFloat()`, `inputBool()`, `inputString()`.
   - Arithmetic, logical, and string concatenation operations.
   - Lexical scoping and closure execution.
 - **Tooling:**

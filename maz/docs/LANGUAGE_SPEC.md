@@ -225,12 +225,45 @@ async def fetchData(url) {
 
 ---
 
-## 7. Standard Output (Rule 5)
+## 7. Standard I/O (Rules 5, 73)
 
+### 7.1 Standard Output (Rule 5)
 Standard output is printed using the built-in `display()` function:
 ```maz
 display("Hello, MAZ World!")
 display(10 + 20)
+```
+
+### 7.2 MAZ Input System (Rule 73)
+MAZ provides five built-in input functions directly in the terminal without external libraries. C++-style `cin >>` syntax is prohibited.
+
+1. **`input(prompt?)` — Universal input:**
+   - Accepts any user-entered text.
+   - Returns a string by default.
+   - Does not reject input based on its contents.
+2. **`inputInt(prompt?)` — Integer input:**
+   - Accepts valid integers only.
+   - Returns an integer.
+   - Throws a clear runtime error if the user enters a non-integer, decimal, or invalid value.
+3. **`inputFloat(prompt?)` — Floating-point input:**
+   - Accepts valid floating-point numbers.
+   - Returns a float.
+   - Throws an error for invalid input.
+4. **`inputBool(prompt?)` — Boolean input:**
+   - Accepts Boolean values (`true` or `false`, case-insensitive).
+   - Returns a Boolean.
+   - Throws an error for invalid input.
+5. **`inputString(prompt?)` — String input:**
+   - Accepts text.
+   - Returns a string without numeric or boolean conversions.
+
+#### Example Usage
+```maz
+name = inputString("Enter your name: ")
+age = inputInt("Enter your age: ")
+height = inputFloat("Enter your height: ")
+isStudent = inputBool("Are you a student? ")
+data = input("Enter anything: ")
 ```
 
 ---
