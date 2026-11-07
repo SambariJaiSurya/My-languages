@@ -165,3 +165,39 @@ This document records the foundational design decisions of the MAZ programming l
 - **Resolution (Automatic Semicolon / Statement Insertion Rules):**
   A newline is treated as a statement terminator *only* if the preceding token could legally end a statement (e.g., identifier, literal, `)`, `]`, `}`, `++`, `--`, `return`) and the subsequent token cannot legally continue the expression. If a binary operator like `+`, `-`, `*`, `,` appears at the end of the line, the statement continues across the newline.
 
+---
+
+## 4. Detailed Specification of Rules 74–82 (Approved Final Design)
+
+### Summary of Decisions
+| Question / Feature | Approved Choice | Syntax & Semantics |
+|---|---|---|
+| **Ternary Operator (Rule 74.7)** | C-style `? :` | `condition ? trueExpr : falseExpr` |
+| **Switch & Case (Rule 75.3)** | Auto-break by default | Explicit `fallthrough` keyword required for continuation |
+| **Logical Operators (Rule 74.3)** | Symbols & Words | Both `&&`, `\|\|`, `!` and `and`, `or`, `not` with identical precedence & short-circuiting |
+| **Type Conversions (Rule 74.10)** | Dual invocations | Standalone functions (`toInt(x)`) and dot methods (`x.toInt()`) |
+| **Inc/Dec in Expressions (Rule 74.5)** | C/JS traditional | Prefix (`++x`) modifies then yields; Postfix (`x++`) yields then modifies |
+| **Operator Precedence (Rule 74.8)** | Standard C-family | Conventional precedence order (Parens > Unary > Multiplicative > Additive > Shift > Relational > Equality > Bitwise > Logical > Ternary > Assignment) |
+| **Loop-else (Rule 75.6)** | Rejected | No `else` on `for`/`while`; use standard flags and conditional blocks |
+| **Block Scoping (Rule 76.3)** | Strict Block Scope | Variables in `{}` never leak out; `new` shadows outer variables |
+| **Immutability (Rule 76.7)** | `const` keyword only | Sole immutable binding keyword |
+| **Global Access (Rule 76.8)** | `global x` | Explicit statement inside functions to rebind/assign globals |
+| **Lambdas (Rules 77.2, 77.3)** | Arrow syntax | `(a, b) => a + b` and `(x) => { ... }` |
+| **Named Arguments (Rule 77.4)** | Colon syntax | `fn(name: "Alice", prefix: "Hello")` |
+| **Variadic Parameters (Rule 77.5)** | Prefix ellipsis | `def sum(...numbers)` collected into MAZ array |
+| **String Interpolation (Rule 78)** | Dollar-curly `${}` | `"Hello, ${name}! In 5 years: ${age + 5}"` |
+| **Character Type (Rule 78)** | Distinct `char` | Single quotes `'A'` for UTF-8 scalar values |
+| **Array Operations (Rule 79)** | Bracket literals & dot methods | `[1, 2, 3]` with `.push()`, `.pop()`, `.length()`, etc. (`pushback()` retained as alias) |
+| **Map / Dictionary (Rule 79)** | Brace key-value literals | `{"name": "Alice", "age": 20}` |
+| **Destructors (Rule 80.1)** | `destructor() { ... }` | Named destructor for object lifecycle cleanup |
+| **Properties (Rule 80.7)** | `get` and `set` | `get width() { ... }` and `set width(val) { ... }` |
+| **Structured Errors (Rule 81)** | Multi-catch & `finally` | `try { ... } catch (err: TypeError) { ... } finally { ... }` and `throw` |
+| **Modules (Rule 82)** | `export` & selective `use` | `export def add()`, `use math { add, subtract }`, `use math as m` |
+| **Memory Allocation (Rule 83)** | `alloc()` / `free()` | Low-level systems allocation: `ptr = alloc(size)`, `ptr = alloc<Type>(count)`, `free(ptr)` |
+| **Concurrency (Rule 84)** | `spawn()` & Channels | Task handles: `handle = spawn(() => fn())`, `ch = Channel()`, `ch.send()`, `ch.receive()` |
+| **System Streams (Rule 85)** | `sys` module & `displayErr()` | `use sys`, `sys.args`, `sys.env()`, `sys.stdin`, `sys.stdout`, `sys.stderr`, `displayErr()` |
+| **File System API (Rule 85)** | OOP `File`, `Directory`, `Path` | `file = File("data.txt")`, `file.readAllText()`, `directory = Directory("dir")`, `path = Path(...)` |
+| **Compiler CLI (Rules 86 & 87)** | Unified `maz` CLI | `maz run`, `maz build [--debug / --release]`, `maz test`, `maz fmt`, `maz install`, `maz check`, `maz repl` |
+
+
+
