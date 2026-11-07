@@ -1,0 +1,13 @@
+{
+  "iconDefinitions": {
+    "_maz": {
+      "iconPath": "./maz.svg"
+    }
+  },
+  "fileExtensions": {
+    "maz": "_maz"
+  },
+  "languageIds": {
+    "maz": "_maz"
+  }
+}

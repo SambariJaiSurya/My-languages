@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Solid crisp vector MAZ logo (rotated 90 degrees) -->
+  <g transform="rotate(90 32 32)">
+    <!-- Letter M (Green #00E676) -->
+    <path fill="#00E676" d="M 6 48 L 6 16 L 14 16 L 20 32 L 26 16 L 34 16 L 34 48 L 27 48 L 27 27 L 22 40 L 18 40 L 13 27 L 13 48 Z"/>
+    
+    <!-- Letter A (Yellow #FFD600) -->
+    <path fill="#FFD600" d="M 37 48 L 45 16 L 52 16 L 60 48 L 53 48 L 51 39 L 44 39 L 42 48 Z M 46 32 L 50 32 L 48 23 Z"/>
+    
+    <!-- Letter Z (Yellow #FFD600) -->
+    <!-- Positioned below or beside -->
+  </g>
+</svg>
+

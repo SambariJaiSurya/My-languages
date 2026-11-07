@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 500" width="220" height="500">
+  <!-- The official MAZ logo (M in green, AZ in yellow, rotated 180 degrees from original) -->
+  <text x="110" y="250"
+        transform="rotate(90 110 250)"
+        text-anchor="middle"
+        dominant-baseline="central"
+        font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Arial Black', sans-serif"
+        font-weight="900"
+        font-size="160"
+        letter-spacing="4">
+    <tspan fill="#00E676">M</tspan><tspan fill="#FFD600">AZ</tspan>
+  </text>
+</svg>

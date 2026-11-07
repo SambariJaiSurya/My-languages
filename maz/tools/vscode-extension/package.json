@@ -1,0 +1,43 @@
+{
+    "name": "maz-language-support",
+    "displayName": "MAZ Language Support",
+    "description": "Syntax highlighting and file icon support for the MAZ programming language",
+    "version": "0.1.1",
+    "publisher": "maz",
+    "icon": "icons/maz.svg",
+    "engines": {
+        "vscode": "^1.60.0"
+    },
+    "categories": [
+        "Programming Languages",
+        "Themes"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "maz",
+                "aliases": ["MAZ", "maz"],
+                "extensions": [".maz"],
+                "configuration": "./language-configuration.json",
+                "icon": {
+                    "light": "./icons/maz.svg",
+                    "dark": "./icons/maz.svg"
+                }
+            }
+        ],
+        "grammars": [
+            {
+                "language": "maz",
+                "scopeName": "source.maz",
+                "path": "./syntaxes/maz.tmLanguage.json"
+            }
+        ],
+        "fileIconThemes": [
+            {
+                "id": "maz-icon-theme",
+                "label": "MAZ File Icons",
+                "path": "./icons/file-icon-theme.json"
+            }
+        ]
+    }
+}
