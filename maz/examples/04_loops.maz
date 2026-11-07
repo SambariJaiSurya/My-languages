@@ -1,0 +1,26 @@
+// Example 04: Loops in MAZ
+// Rule 7: Three-part loop separated by commas, 'new' creates loop-local variable
+
+display("--- Loop 1: For loop with 'new' clause ---")
+for (new i = 1, i <= 5, i++) {
+    display("Iteration i = " + i)
+}
+
+display("\n--- Loop 2: Variable shadowing with 'new' ---")
+k = 999
+display("Before loop, outer k = " + k)
+
+for (new k = 0, k < 3, k++) {
+    display("Inside loop, local k = " + k)
+}
+
+display("After loop, outer k remains unchanged = " + k)
+
+display("\n--- Loop 3: While Loop ---")
+count = 3
+while (count > 0) {
+    display("Countdown: " + count)
+    count--
+}
+display("Blast off!")
+

@@ -1,0 +1,5 @@
+// Testing MAZ Type Safety and Diagnostic Error Reporting
+x = 10
+display("x is int: " + x)
+x = "incompatible string"
+

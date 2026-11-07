@@ -1,0 +1,48 @@
+// Example 05: Functions in MAZ
+// Rule 3: def declarations
+// Rule 21: Inferred return types
+// Rule 22: Default parameters
+
+display("--- Basic Functions ---")
+def add(a, b) {
+    return a + b
+}
+
+sum = add(15, 27)
+display("15 + 27 = " + sum)
+
+display("\n--- Default Parameters ---")
+def greet(name = "MAZ Developer", greeting = "Hello") {
+    display(greeting + ", " + name + "!")
+}
+
+greet()
+greet("Alice")
+greet("Bob", "Welcome")
+
+display("\n--- Recursive Algorithm: Factorial ---")
+def factorial(n) {
+    if (n <= 1) {
+        return 1
+    }
+    return n * factorial(n - 1)
+}
+
+for (new i = 1, i <= 6, i++) {
+    display("factorial(" + i + ") = " + factorial(i))
+}
+
+display("\n--- Fibonacci Sequence ---")
+def fib(n) {
+    if (n <= 0) {
+        return 0
+    }
+    if (n == 1) {
+        return 1
+    }
+    return fib(n - 1) + fib(n - 2)
+}
+
+display("fib(7) = " + fib(7))
+display("fib(10) = " + fib(10))
+

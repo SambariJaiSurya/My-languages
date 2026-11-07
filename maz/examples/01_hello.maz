@@ -1,0 +1,25 @@
+// Example 01: Hello World & Fundamentals in MAZ
+// Rule 1: Type inference by default, no 'let' required
+// Rule 5: display() standard output
+// Rule 15: String concatenation using +
+// Rule 16: // and /* */ comments
+
+display("========================================")
+display(" Welcome to MAZ — Programming Language ")
+display("========================================")
+
+message = "Hello, World from MAZ!"
+language = "MAZ"
+version = 0.1
+
+display(message)
+display("Language: " + language + ", Version: " + version)
+
+/* Multi-line comment demonstration:
+   MAZ supports clean, readable code with curly braces
+   and semicolon-free statement separation.
+*/
+
+author = "Creator"
+display("Happy coding, " + author + "!")
+

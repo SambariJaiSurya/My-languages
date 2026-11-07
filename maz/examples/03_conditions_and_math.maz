@@ -1,0 +1,48 @@
+// Example 03: Conditions, Arithmetic and Increment
+// Rule 6: C++ style conditions
+// Rule 13: Mathematical operators
+// Rule 51: ++ and -- operators
+
+display("--- Math Operations ---")
+a = 25
+b = 4
+
+display("a + b = " + (a + b))
+display("a - b = " + (a - b))
+display("a * b = " + (a * b))
+display("a / b = " + (a / b))
+display("a % b = " + (a % b))
+
+display("\n--- Increment & Decrement ---")
+x = 10
+display("Initial x: " + x)
+x++
+display("After x++: " + x)
+++x
+display("After ++x: " + x)
+x--
+display("After x--: " + x)
+
+display("\n--- Conditions: if / else if / else ---")
+grade = 85
+
+if (grade >= 90) {
+    display("Performance: Outstanding (A)")
+} else if (grade >= 80) {
+    display("Performance: Very Good (B)")
+} else if (grade >= 70) {
+    display("Performance: Good (C)")
+} else {
+    display("Performance: Needs Improvement")
+}
+
+display("\n--- Logical Operators ---")
+hasTicket = true
+age = 20
+
+if (hasTicket && age >= 18) {
+    display("Access granted: Adult with ticket.")
+} else {
+    display("Access denied.")
+}
+

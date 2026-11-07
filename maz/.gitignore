@@ -1,0 +1,22 @@
+# Binaries & Executables
+*.exe
+*.o
+*.obj
+*.out
+*.dll
+*.so
+*.dylib
+
+# Visual Studio / VS Code
+.vscode/
+.vs/
+
+# Crash dumps / logs
+*.log
+*.tmp
+*.dump
+
+# System files
+Thumbs.db
+.DS_Store
+
