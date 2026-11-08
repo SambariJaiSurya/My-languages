@@ -228,11 +228,21 @@ async def fetchData(url) {
 ## 7. Standard I/O (Rules 5, 73)
 
 ### 7.1 Standard Output (Rule 5)
-Standard output is printed using the built-in `display()` function:
+MAZ provides two built-in output functions:
+
+- `display(...)` — prints without a trailing newline (stays on the same line).
+- `displayl(...)` — prints with a trailing newline (moves to the next line).
+
 ```maz
-display("Hello, MAZ World!")
-display(10 + 20)
+displayl("Hello, MAZ World!")     // prints and moves to next line
+displayl(10 + 20)                 // prints 30 and moves to next line
+
+display("Loading")                // stays on same line
+display("...")                    // still same line
+displayl(" Done!")                // prints and moves to next line
 ```
+
+The `endl` constant is also available for explicit newline insertion.
 
 ### 7.2 MAZ Input System (Rule 73)
 MAZ provides five built-in input functions directly in the terminal without external libraries. C++-style `cin >>` syntax is prohibited.
@@ -241,28 +251,28 @@ MAZ provides five built-in input functions directly in the terminal without exte
    - Accepts any user-entered text.
    - Returns a string by default.
    - Does not reject input based on its contents.
-2. **`inputInt(prompt?)` — Integer input:**
+2. **`inputint(prompt?)` — Integer input:**
    - Accepts valid integers only.
    - Returns an integer.
    - Throws a clear runtime error if the user enters a non-integer, decimal, or invalid value.
-3. **`inputFloat(prompt?)` — Floating-point input:**
+3. **`inputfloat(prompt?)` — Floating-point input:**
    - Accepts valid floating-point numbers.
    - Returns a float.
    - Throws an error for invalid input.
-4. **`inputBool(prompt?)` — Boolean input:**
+4. **`inputbool(prompt?)` — Boolean input:**
    - Accepts Boolean values (`true` or `false`, case-insensitive).
    - Returns a Boolean.
    - Throws an error for invalid input.
-5. **`inputString(prompt?)` — String input:**
+5. **`inputstring(prompt?)` — String input:**
    - Accepts text.
    - Returns a string without numeric or boolean conversions.
 
 #### Example Usage
 ```maz
-name = inputString("Enter your name: ")
-age = inputInt("Enter your age: ")
-height = inputFloat("Enter your height: ")
-isStudent = inputBool("Are you a student? ")
+name = inputstring("Enter your name: ")
+age = inputint("Enter your age: ")
+height = inputfloat("Enter your height: ")
+isStudent = inputbool("Are you a student? ")
 data = input("Enter anything: ")
 ```
 

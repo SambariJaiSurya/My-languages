@@ -1,19 +1,19 @@
 // Example 01: Hello World & Fundamentals in MAZ
 // Rule 1: Type inference by default, no 'let' required
-// Rule 5: display() standard output
+// Rule 5: display() stays on same line, displayl() moves to next line
 // Rule 15: String concatenation using +
 // Rule 16: // and /* */ comments
 
-display("========================================")
-display(" Welcome to MAZ — Programming Language ")
-display("========================================")
+displayl("========================================")
+displayl(" Welcome to MAZ — Programming Language ")
+displayl("========================================")
 
 message = "Hello, World from MAZ!"
 language = "MAZ"
 version = 0.1
 
-display(message)
-display("Language: " + language + ", Version: " + version)
+displayl(message)
+displayl("Language: " + language + ", Version: " + version)
 
 /* Multi-line comment demonstration:
    MAZ supports clean, readable code with curly braces
@@ -21,5 +21,4 @@ display("Language: " + language + ", Version: " + version)
 */
 
 author = "Creator"
-display("Happy coding, " + author + "!")
-
+displayl("Happy coding, " + author + "!")

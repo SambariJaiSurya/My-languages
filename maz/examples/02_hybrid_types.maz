@@ -2,27 +2,26 @@
 // Rule 1: Type inference and const
 // Rule 9: dyn and force for type mutation
 
-display("--- Test 1: Inferred Types ---")
+displayl("--- Test 1: Inferred Types ---")
 count = 42
-display("Initial count: " + count)
+displayl("Initial count: " + count)
 count = 100
-display("Updated count: " + count)
+displayl("Updated count: " + count)
 
-display("\n--- Test 2: Dynamic Variables with 'dyn' ---")
+displayl("\n--- Test 2: Dynamic Variables with 'dyn' ---")
 dyn flexible = 123
-display("flexible as int: " + flexible)
+displayl("flexible as int: " + flexible)
 flexible = "Now I am a string!"
-display("flexible as string: " + flexible)
+displayl("flexible as string: " + flexible)
 flexible = true
-display("flexible as bool: " + flexible)
+displayl("flexible as bool: " + flexible)
 
-display("\n--- Test 3: Forced Re-typing with 'force' ---")
+displayl("\n--- Test 3: Forced Re-typing with 'force' ---")
 score = 99
-display("score as int: " + score)
+displayl("score as int: " + score)
 force score = "Excellent (Grade: A+)"
-display("score after force: " + score)
+displayl("score after force: " + score)
 
-display("\n--- Test 4: Constants with 'const' ---")
+displayl("\n--- Test 4: Constants with 'const' ---")
 const MAX_USERS = 500
-display("Constant MAX_USERS: " + MAX_USERS)
-
+displayl("Constant MAX_USERS: " + MAX_USERS)

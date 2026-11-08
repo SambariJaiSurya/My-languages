@@ -37,15 +37,28 @@ val = 42            // Inferred int
 // val = "text"     // Error: cannot assign string to int
 ```
 
-### Rule 5: Standard Output with `display()`
-Output is printed using the built-in `display()` function without requiring imports. It automatically appends a newline at the end. You can also print newlines explicitly using `display(endl)` or `display("\n")`.
-```maz
-display("Hello, MAZ World!")
-display("Score:", 100)
+### Rule 5: Standard Output with `display()` and `displayl()`
+MAZ provides two output functions:
+- `display()` — prints text and stays on the **same line** (no trailing newline).
+- `displayl()` — prints text and moves to the **next line** (appends a newline).
 
-// Moving to the next line explicitly:
-display(endl)
-display("\n")
+Both accept multiple arguments separated by commas.
+```maz
+// displayl() adds a newline after printing
+displayl("Hello, MAZ World!")
+displayl("Score:", 100)
+
+// display() stays on the same line
+display("Loading")
+display(".")
+display(".")
+displayl(".")       // prints the last dot and moves to next line
+
+// Output: Loading...
+
+// You can also use endl or "\n" for explicit newlines
+display("Line 1" + "\n")
+display("Line 2" + endl)
 ```
 
 ### Rule 6: C++ Style Conditions

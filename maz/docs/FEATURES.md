@@ -25,8 +25,8 @@
 | Logical Operators (`&&`, `||`, `!`) | 🟢 Implemented | v0.1 | Operators | Boolean conjunction, disjunction, and negation |
 | Increment / Decrement (`++`, `--`) | 🟢 Implemented | v0.1 | Operators | Fast pre/post variable mutation |
 | String Concatenation (`+`) | 🟢 Implemented | v0.1 | Strings | Combining strings and values using `+` |
-| Output Function (`display`) | 🟢 Implemented | v0.1 | I/O | Built-in standard output printer |
-| Input Functions (`input`, `inputInt`, `inputFloat`, `inputBool`, `inputString`) | 🟢 Implemented | v0.1 | I/O | Rule 73: Built-in typed & universal input system |
+| Output Functions (`display`, `displayl`) | 🟢 Implemented | v0.1 | I/O | `display()` prints without newline, `displayl()` prints with newline |
+| Input Functions (`input`, `inputint`, `inputfloat`, `inputbool`, `inputstring`) | 🟢 Implemented | v0.1 | I/O | Rule 73: Built-in typed & universal input system |
 | Conditions (`if`, `else if`, `else`) | 🟢 Implemented | v0.1 | Control Flow | C++ style branch evaluation |
 | Three-Part Loop with Commas (`for`) | 🟢 Implemented | v0.1 | Control Flow | `for (new i = 0, i < 10, i++)` with `new` scoping |
 | While Loops (`while`) | 🟢 Implemented | v0.1 | Control Flow | Condition-driven iteration |

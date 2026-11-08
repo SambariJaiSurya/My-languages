@@ -76,7 +76,7 @@
             "patterns": [
                 {
                     "name": "support.function.builtin.maz",
-                    "match": "\\b(display|clock|input|inputint|inputfloat|inputbool|inputstring|inputInt|inputFloat|inputBool|inputString)\\b"
+                    "match": "\\b(display|displayl|clock|input|inputint|inputfloat|inputbool|inputstring|inputInt|inputFloat|inputBool|inputString)\\b"
                 }
             ]
         },

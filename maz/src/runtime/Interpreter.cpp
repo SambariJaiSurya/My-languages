@@ -26,8 +26,21 @@ static std::string trimString(const std::string& str) {
 }
 
 void Interpreter::registerBuiltins() {
-    // Rule 5: display() standard output function
+    // display(): output without trailing newline (stays on the same line)
     NativeFn displayFn = [](const std::vector<Value>& args) -> Value {
+        for (size_t i = 0; i < args.size(); ++i) {
+            std::cout << args[i].toString();
+            if (i + 1 < args.size()) {
+                std::cout << " ";
+            }
+        }
+        std::cout << std::flush;
+        return Value::makeNull();
+    };
+    globals->define("display", Value(displayFn), true, false);
+
+    // displayl(): output with trailing newline (prints text and moves to the next line)
+    NativeFn displaylFn = [](const std::vector<Value>& args) -> Value {
         for (size_t i = 0; i < args.size(); ++i) {
             std::cout << args[i].toString();
             if (i + 1 < args.size()) {
@@ -37,7 +50,7 @@ void Interpreter::registerBuiltins() {
         std::cout << std::endl;
         return Value::makeNull();
     };
-    globals->define("display", Value(displayFn), true, false);
+    globals->define("displayl", Value(displaylFn), true, false);
 
     // Newline constants for display(endl) and string escapes "\n"
     globals->define("endl", Value(std::string("\n")), true, false);

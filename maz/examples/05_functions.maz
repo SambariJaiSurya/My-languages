@@ -3,24 +3,24 @@
 // Rule 21: Inferred return types
 // Rule 22: Default parameters
 
-display("--- Basic Functions ---")
+displayl("--- Basic Functions ---")
 def add(a, b) {
     return a + b
 }
 
 sum = add(15, 27)
-display("15 + 27 = " + sum)
+displayl("15 + 27 = " + sum)
 
-display("\n--- Default Parameters ---")
+displayl("\n--- Default Parameters ---")
 def greet(name = "MAZ Developer", greeting = "Hello") {
-    display(greeting + ", " + name + "!")
+    displayl(greeting + ", " + name + "!")
 }
 
 greet()
 greet("Alice")
 greet("Bob", "Welcome")
 
-display("\n--- Recursive Algorithm: Factorial ---")
+displayl("\n--- Recursive Algorithm: Factorial ---")
 def factorial(n) {
     if (n <= 1) {
         return 1
@@ -29,10 +29,10 @@ def factorial(n) {
 }
 
 for (new i = 1, i <= 6, i++) {
-    display("factorial(" + i + ") = " + factorial(i))
+    displayl("factorial(" + i + ") = " + factorial(i))
 }
 
-display("\n--- Fibonacci Sequence ---")
+displayl("\n--- Fibonacci Sequence ---")
 def fib(n) {
     if (n <= 0) {
         return 0
@@ -43,6 +43,5 @@ def fib(n) {
     return fib(n - 1) + fib(n - 2)
 }
 
-display("fib(7) = " + fib(7))
-display("fib(10) = " + fib(10))
-
+displayl("fib(7) = " + fib(7))
+displayl("fib(10) = " + fib(10))

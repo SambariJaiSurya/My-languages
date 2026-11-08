@@ -34,8 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Explicit re-typing using `force`.
   - Fully dynamic variables using `dyn`.
   - Immutable bindings with `const`.
-  - Built-in standard output: `display(...)`.
-  - Built-in input system (Rule 73): `input()`, `inputInt()`, `inputFloat()`, `inputBool()`, `inputString()`.
+  - Built-in standard output: `display(...)` (no newline) and `displayl(...)` (with newline), plus `endl` constant.
+  - Built-in input system (Rule 73): `input()`, `inputint()`, `inputfloat()`, `inputbool()`, `inputstring()`.
   - Arithmetic, logical, and string concatenation operations.
   - Lexical scoping and closure execution.
 - **Tooling:**
