@@ -37,6 +37,7 @@ class CallExpr;
 
 class ExpressionStmt;
 class VarDeclStmt;
+class MultiVarDeclStmt;
 class BlockStmt;
 class IfStmt;
 class WhileStmt;
@@ -44,6 +45,8 @@ class ForStmt;
 class FunctionStmt;
 class ReturnStmt;
 class Program;
+
+class GlobalStmt;
 
 // Visitor Interface
 class ASTVisitor {
@@ -60,6 +63,8 @@ public:
 
     virtual void visitExpressionStmt(ExpressionStmt& stmt) = 0;
     virtual void visitVarDeclStmt(VarDeclStmt& stmt) = 0;
+    virtual void visitMultiVarDeclStmt(MultiVarDeclStmt& stmt) = 0;
+    virtual void visitGlobalStmt(GlobalStmt& stmt) = 0;
     virtual void visitBlockStmt(BlockStmt& stmt) = 0;
     virtual void visitIfStmt(IfStmt& stmt) = 0;
     virtual void visitWhileStmt(WhileStmt& stmt) = 0;
@@ -166,11 +171,32 @@ public:
     ExprPtr initializer;
     bool isConst{false};
     bool isDyn{false};
+    bool isNew{false};
+    ValueType explicitType{ValueType::Null};
 
-    VarDeclStmt(Token n, ExprPtr init, bool c = false, bool d = false)
-        : name(std::move(n)), initializer(std::move(init)), isConst(c), isDyn(d) {}
+    VarDeclStmt(Token n, ExprPtr init, bool c = false, bool d = false, bool nw = false, ValueType expType = ValueType::Null)
+        : name(std::move(n)), initializer(std::move(init)), isConst(c), isDyn(d), isNew(nw), explicitType(expType) {}
 
     void accept(ASTVisitor& visitor) override { visitor.visitVarDeclStmt(*this); }
+};
+
+class MultiVarDeclStmt : public Stmt {
+public:
+    std::vector<std::shared_ptr<VarDeclStmt>> declarations;
+
+    explicit MultiVarDeclStmt(std::vector<std::shared_ptr<VarDeclStmt>> decls)
+        : declarations(std::move(decls)) {}
+
+    void accept(ASTVisitor& visitor) override { visitor.visitMultiVarDeclStmt(*this); }
+};
+
+class GlobalStmt : public Stmt {
+public:
+    Token name;
+
+    explicit GlobalStmt(Token n) : name(std::move(n)) {}
+
+    void accept(ASTVisitor& visitor) override { visitor.visitGlobalStmt(*this); }
 };
 
 class BlockStmt : public Stmt {

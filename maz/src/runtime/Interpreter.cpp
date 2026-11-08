@@ -197,11 +197,47 @@ void Interpreter::visitExpressionStmt(ExpressionStmt& stmt) {
 }
 
 void Interpreter::visitVarDeclStmt(VarDeclStmt& stmt) {
+    if (currentEnv->existsCurrentScope(stmt.name.lexeme) && !stmt.isNew) {
+        throw MazException(stmt.name.location, "Error: Variable '" + stmt.name.lexeme + "' is already declared in this scope.");
+    }
+
     Value value = Value::makeNull();
+    bool isInit = false;
     if (stmt.initializer) {
         value = evaluate(*stmt.initializer);
+        isInit = true;
+
+        if (stmt.explicitType != ValueType::Null && stmt.explicitType != value.type) {
+            if (stmt.explicitType == ValueType::Float && value.isInt()) {
+                value = Value(static_cast<double>(value.asInt()));
+            } else {
+                std::string expectedName = "variable";
+                if (stmt.explicitType == ValueType::Int) expectedName = "an integer";
+                else if (stmt.explicitType == ValueType::Float) expectedName = "a float";
+                else if (stmt.explicitType == ValueType::String) expectedName = "a string";
+                else if (stmt.explicitType == ValueType::Bool) expectedName = "a boolean";
+
+                throw MazException(stmt.name.location,
+                    "Type Error: Cannot assign " + value.typeName() + " to " + expectedName + " variable '" + stmt.name.lexeme + "'.");
+            }
+        }
+    } else {
+        if (stmt.isConst) {
+            throw MazException(stmt.name.location, "Error: Constant '" + stmt.name.lexeme + "' must be initialized upon declaration.");
+        }
     }
-    currentEnv->define(stmt.name.lexeme, value, stmt.isConst, stmt.isDyn);
+
+    currentEnv->define(stmt.name.lexeme, value, stmt.isConst, stmt.isDyn, isInit, stmt.explicitType);
+}
+
+void Interpreter::visitMultiVarDeclStmt(MultiVarDeclStmt& stmt) {
+    for (const auto& decl : stmt.declarations) {
+        if (decl) visitVarDeclStmt(*decl);
+    }
+}
+
+void Interpreter::visitGlobalStmt(GlobalStmt& stmt) {
+    currentEnv->markGlobal(stmt.name.lexeme);
 }
 
 void Interpreter::visitBlockStmt(BlockStmt& stmt) {

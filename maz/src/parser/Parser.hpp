@@ -30,6 +30,9 @@ private:
     StmtPtr declaration();
     StmtPtr constDeclaration();
     StmtPtr dynDeclaration();
+    StmtPtr newDeclaration();
+    StmtPtr globalDeclaration();
+    StmtPtr typedDeclaration(ValueType type);
     StmtPtr functionDeclaration();
     StmtPtr statement();
     StmtPtr ifStatement();

@@ -28,6 +28,8 @@ public:
     // Visitor methods for statements
     void visitExpressionStmt(ExpressionStmt& stmt) override;
     void visitVarDeclStmt(VarDeclStmt& stmt) override;
+    void visitMultiVarDeclStmt(MultiVarDeclStmt& stmt) override;
+    void visitGlobalStmt(GlobalStmt& stmt) override;
     void visitBlockStmt(BlockStmt& stmt) override;
     void visitIfStmt(IfStmt& stmt) override;
     void visitWhileStmt(WhileStmt& stmt) override;

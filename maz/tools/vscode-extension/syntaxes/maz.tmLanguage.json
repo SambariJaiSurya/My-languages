@@ -56,7 +56,11 @@
             "patterns": [
                 {
                     "name": "keyword.control.maz",
-                    "match": "\\b(if|else|for|while|return|try|catch|new)\\b"
+                    "match": "\\b(if|else|for|while|return|try|catch|new|global)\\b"
+                },
+                {
+                    "name": "keyword.type.maz",
+                    "match": "\\b(int|float|double|string|char|bool)\\b"
                 },
                 {
                     "name": "keyword.declaration.maz",

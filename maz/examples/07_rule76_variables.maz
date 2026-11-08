@@ -1,0 +1,55 @@
+// Testing Rule 76 Variable Declarations, Scoping and Shadowing
+
+display("=== Test 1: Explicit Declarations & Multiple Declarations ===")
+int a = 10, b = 20, c = 30
+display("a =", a, "b =", b, "c =", c)
+
+int p = 100, q, r = 300
+q = 200
+display("p =", p, "q =", q, "r =", r)
+
+string name = "Surya"
+float height = 175.5
+bool isStudent = true
+display("name:", name, "height:", height, "isStudent:", isStudent)
+
+display("=== Test 2: Delayed Assignment ===")
+int delayedVar
+delayedVar = 999
+display("delayedVar =", delayedVar)
+
+display("=== Test 3: Block Scoping & Shadowing with new ===")
+int score = 10
+if (true) {
+    display("Outer score inside if:", score)
+    score = 50
+    display("Updated outer score:", score)
+
+    new score = 100
+    display("Shadowed score with new:", score)
+}
+display("Outer score after if block:", score)
+
+display("=== Test 4: Explicit Global Access inside Functions ===")
+int count = 0
+
+def increase() {
+    global count
+    count = count + 1
+}
+
+increase()
+increase()
+display("Count after two increases:", count)
+
+display("=== Test 5: dyn and force ===")
+dyn dynamicVar = 100
+display("dyn as int:", dynamicVar)
+dynamicVar = "Now string"
+display("dyn as string:", dynamicVar)
+
+int fixedVal = 50
+force fixedVal = "Forced string"
+display("force retyped fixedVal:", fixedVal)
+
+display("=== All Rule 76 Tests Passed Successfully! ===")

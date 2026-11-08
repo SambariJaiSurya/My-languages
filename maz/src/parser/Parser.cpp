@@ -76,25 +76,112 @@ StmtPtr Parser::declaration() {
     if (match({TokenType::TOKEN_DYN})) {
         return dynDeclaration();
     }
+    if (match({TokenType::TOKEN_NEW})) {
+        return newDeclaration();
+    }
+    if (match({TokenType::TOKEN_GLOBAL})) {
+        return globalDeclaration();
+    }
+    if (match({TokenType::TOKEN_TYPE_INT})) {
+        return typedDeclaration(ValueType::Int);
+    }
+    if (match({TokenType::TOKEN_TYPE_FLOAT})) {
+        return typedDeclaration(ValueType::Float);
+    }
+    if (match({TokenType::TOKEN_TYPE_DOUBLE})) {
+        return typedDeclaration(ValueType::Float);
+    }
+    if (match({TokenType::TOKEN_TYPE_STRING})) {
+        return typedDeclaration(ValueType::String);
+    }
+    if (match({TokenType::TOKEN_TYPE_BOOL})) {
+        return typedDeclaration(ValueType::Bool);
+    }
+    if (match({TokenType::TOKEN_TYPE_CHAR})) {
+        return typedDeclaration(ValueType::String);
+    }
     return statement();
 }
 
 StmtPtr Parser::constDeclaration() {
-    Token name = consume(TokenType::TOKEN_IDENTIFIER, "Expected constant name after 'const'.");
-    consume(TokenType::TOKEN_ASSIGN, "Expected '=' in constant initialization.");
-    ExprPtr initializer = expression();
-    return std::make_shared<VarDeclStmt>(name, initializer, true, false);
+    ValueType expType = ValueType::Null;
+    if (match({TokenType::TOKEN_TYPE_INT})) expType = ValueType::Int;
+    else if (match({TokenType::TOKEN_TYPE_FLOAT})) expType = ValueType::Float;
+    else if (match({TokenType::TOKEN_TYPE_DOUBLE})) expType = ValueType::Float;
+    else if (match({TokenType::TOKEN_TYPE_STRING})) expType = ValueType::String;
+    else if (match({TokenType::TOKEN_TYPE_BOOL})) expType = ValueType::Bool;
+    else if (match({TokenType::TOKEN_TYPE_CHAR})) expType = ValueType::String;
+
+    std::vector<std::shared_ptr<VarDeclStmt>> decls;
+    do {
+        Token name = consume(TokenType::TOKEN_IDENTIFIER, "Expected constant name.");
+        consume(TokenType::TOKEN_ASSIGN, "Expected '=' in constant initialization.");
+        ExprPtr initializer = expression();
+        decls.push_back(std::make_shared<VarDeclStmt>(name, initializer, true, false, false, expType));
+    } while (match({TokenType::TOKEN_COMMA}));
+
+    if (decls.size() == 1) {
+        return decls[0];
+    }
+    return std::make_shared<MultiVarDeclStmt>(std::move(decls));
 }
 
 StmtPtr Parser::dynDeclaration() {
-    Token name = consume(TokenType::TOKEN_IDENTIFIER, "Expected variable name after 'dyn'.");
+    std::vector<std::shared_ptr<VarDeclStmt>> decls;
+    do {
+        Token name = consume(TokenType::TOKEN_IDENTIFIER, "Expected variable name after 'dyn'.");
+        ExprPtr initializer = nullptr;
+        if (match({TokenType::TOKEN_ASSIGN})) {
+            initializer = expression();
+        } else {
+            initializer = std::make_shared<LiteralExpr>(Value::makeNull(), name.location);
+        }
+        decls.push_back(std::make_shared<VarDeclStmt>(name, initializer, false, true, false, ValueType::Null));
+    } while (match({TokenType::TOKEN_COMMA}));
+
+    if (decls.size() == 1) {
+        return decls[0];
+    }
+    return std::make_shared<MultiVarDeclStmt>(std::move(decls));
+}
+
+StmtPtr Parser::newDeclaration() {
+    ValueType expType = ValueType::Null;
+    if (match({TokenType::TOKEN_TYPE_INT})) expType = ValueType::Int;
+    else if (match({TokenType::TOKEN_TYPE_FLOAT})) expType = ValueType::Float;
+    else if (match({TokenType::TOKEN_TYPE_DOUBLE})) expType = ValueType::Float;
+    else if (match({TokenType::TOKEN_TYPE_STRING})) expType = ValueType::String;
+    else if (match({TokenType::TOKEN_TYPE_BOOL})) expType = ValueType::Bool;
+    else if (match({TokenType::TOKEN_TYPE_CHAR})) expType = ValueType::String;
+
+    Token name = consume(TokenType::TOKEN_IDENTIFIER, "Expected variable name after 'new'.");
     ExprPtr initializer = nullptr;
     if (match({TokenType::TOKEN_ASSIGN})) {
         initializer = expression();
-    } else {
-        initializer = std::make_shared<LiteralExpr>(Value::makeNull(), name.location);
     }
-    return std::make_shared<VarDeclStmt>(name, initializer, false, true);
+    return std::make_shared<VarDeclStmt>(name, initializer, false, false, true, expType);
+}
+
+StmtPtr Parser::globalDeclaration() {
+    Token name = consume(TokenType::TOKEN_IDENTIFIER, "Expected variable name after 'global'.");
+    return std::make_shared<GlobalStmt>(name);
+}
+
+StmtPtr Parser::typedDeclaration(ValueType type) {
+    std::vector<std::shared_ptr<VarDeclStmt>> decls;
+    do {
+        Token name = consume(TokenType::TOKEN_IDENTIFIER, "Expected variable name in declaration.");
+        ExprPtr initializer = nullptr;
+        if (match({TokenType::TOKEN_ASSIGN})) {
+            initializer = expression();
+        }
+        decls.push_back(std::make_shared<VarDeclStmt>(name, initializer, false, false, false, type));
+    } while (match({TokenType::TOKEN_COMMA}));
+
+    if (decls.size() == 1) {
+        return decls[0];
+    }
+    return std::make_shared<MultiVarDeclStmt>(std::move(decls));
 }
 
 StmtPtr Parser::functionDeclaration() {

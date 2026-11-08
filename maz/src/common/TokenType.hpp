@@ -23,6 +23,7 @@ enum class TokenType {
     TOKEN_DYN,
     TOKEN_FORCE,
     TOKEN_NEW,
+    TOKEN_GLOBAL,
     TOKEN_IF,
     TOKEN_ELSE,
     TOKEN_FOR,
@@ -42,6 +43,14 @@ enum class TokenType {
     TOKEN_ASYNC,
     TOKEN_AWAIT,
     TOKEN_USE,
+
+    // Type keywords
+    TOKEN_TYPE_INT,
+    TOKEN_TYPE_FLOAT,
+    TOKEN_TYPE_DOUBLE,
+    TOKEN_TYPE_STRING,
+    TOKEN_TYPE_CHAR,
+    TOKEN_TYPE_BOOL,
 
     // Operators
     TOKEN_PLUS,          // +
