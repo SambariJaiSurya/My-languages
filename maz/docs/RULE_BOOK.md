@@ -38,10 +38,14 @@ val = 42            // Inferred int
 ```
 
 ### Rule 5: Standard Output with `display()`
-Output is printed using the built-in `display()` function without requiring imports.
+Output is printed using the built-in `display()` function without requiring imports. It automatically appends a newline at the end. You can also print newlines explicitly using `display(endl)` or `display("\n")`.
 ```maz
 display("Hello, MAZ World!")
 display("Score:", 100)
+
+// Moving to the next line explicitly:
+display(endl)
+display("\n")
 ```
 
 ### Rule 6: C++ Style Conditions

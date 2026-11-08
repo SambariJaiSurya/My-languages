@@ -48,3 +48,4 @@ display("=== 6. Bitwise Mathematics ===")
 display("popcount(29) =", popcount(29)) // 29 = 11101 in binary -> 4 set bits
 
 display("=== All Math Tests Executed Successfully! ===")
+

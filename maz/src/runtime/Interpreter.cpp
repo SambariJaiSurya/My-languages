@@ -39,6 +39,9 @@ void Interpreter::registerBuiltins() {
     };
     globals->define("display", Value(displayFn), true, false);
 
+    // Newline constants for display(endl) and string escapes "\n"
+    globals->define("endl", Value(std::string("\n")), true, false);
+
     // Built-in clock for timing/benchmarks
     NativeFn clockFn = [](const std::vector<Value>&) -> Value {
         auto now = std::chrono::steady_clock::now();
