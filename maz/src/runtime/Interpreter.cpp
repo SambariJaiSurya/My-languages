@@ -512,6 +512,19 @@ void Interpreter::visitVarDeclStmt(VarDeclStmt& stmt) {
         throw MazException(stmt.name.location, "Error: Variable '" + stmt.name.lexeme + "' is already declared in this scope.");
     }
 
+    if (stmt.isTimer) {
+        Value initVal = (stmt.explicitType == ValueType::Int) ? Value((int64_t)0) : Value(0.0);
+        if (stmt.initializer) {
+            initVal = evaluate(*stmt.initializer);
+        }
+        if (!initVal.isNumber()) {
+            throw MazException(stmt.name.location, "Timer variable '" + stmt.name.lexeme + "' can only be initialized with a number.");
+        }
+        bool isInt = (stmt.explicitType == ValueType::Int);
+        currentEnv->defineTimer(stmt.name.lexeme, initVal.asFloat(), isInt);
+        return;
+    }
+
     Value value = Value::makeNull();
     bool isInit = false;
     if (stmt.initializer) {
@@ -566,7 +579,32 @@ void Interpreter::visitIfStmt(IfStmt& stmt) {
 
 void Interpreter::visitWhileStmt(WhileStmt& stmt) {
     while (evaluate(*stmt.condition).isTruthy()) {
-        execute(*stmt.body);
+        try {
+            execute(*stmt.body);
+        } catch (const LoopControlException& lce) {
+            bool isTarget = false;
+            if (!lce.label.empty()) {
+                isTarget = (stmt.label == lce.label);
+            } else {
+                isTarget = (lce.depth <= 1);
+            }
+
+            if (isTarget) {
+                if (lce.kind == LoopControlException::Break) {
+                    break;
+                } else {
+                    continue;
+                }
+            } else {
+                if (lce.label.empty()) {
+                    LoopControlException nextLce = lce;
+                    nextLce.depth--;
+                    throw nextLce;
+                } else {
+                    throw;
+                }
+            }
+        }
     }
 }
 
@@ -593,8 +631,36 @@ void Interpreter::visitForStmt(ForStmt& stmt) {
                 if (!cond.isTruthy()) break;
             }
 
-            if (stmt.body) {
-                execute(*stmt.body);
+            try {
+                if (stmt.body) {
+                    execute(*stmt.body);
+                }
+            } catch (const LoopControlException& lce) {
+                bool isTarget = false;
+                if (!lce.label.empty()) {
+                    isTarget = (stmt.label == lce.label);
+                } else {
+                    isTarget = (lce.depth <= 1);
+                }
+
+                if (isTarget) {
+                    if (lce.kind == LoopControlException::Break) {
+                        break;
+                    } else { // Continue
+                        if (stmt.update) {
+                            evaluate(*stmt.update);
+                        }
+                        continue;
+                    }
+                } else {
+                    if (lce.label.empty()) {
+                        LoopControlException nextLce = lce;
+                        nextLce.depth--;
+                        throw nextLce;
+                    } else {
+                        throw;
+                    }
+                }
             }
 
             if (stmt.update) {
@@ -607,6 +673,14 @@ void Interpreter::visitForStmt(ForStmt& stmt) {
     }
 
     currentEnv = previous;
+}
+
+void Interpreter::visitBreakStmt(BreakStmt& stmt) {
+    throw LoopControlException(LoopControlException::Break, stmt.depth, stmt.label, stmt.keyword);
+}
+
+void Interpreter::visitContinueStmt(ContinueStmt& stmt) {
+    throw LoopControlException(LoopControlException::Continue, stmt.depth, stmt.label, stmt.keyword);
 }
 
 void Interpreter::visitFunctionStmt(FunctionStmt& stmt) {
@@ -673,7 +747,7 @@ void Interpreter::visitUpdateExpr(UpdateExpr& expr) {
 
 void Interpreter::visitBinaryExpr(BinaryExpr& expr) {
     // Short-circuiting for logical operators
-    if (expr.op.type == TokenType::TOKEN_OR_OR) {
+    if (expr.op.type == TokenType::TOKEN_OR_OR || expr.op.type == TokenType::TOKEN_OR) {
         Value left = evaluate(*expr.left);
         if (left.isTruthy()) {
             lastEvaluatedValue = left;
@@ -682,7 +756,7 @@ void Interpreter::visitBinaryExpr(BinaryExpr& expr) {
         lastEvaluatedValue = evaluate(*expr.right);
         return;
     }
-    if (expr.op.type == TokenType::TOKEN_AND_AND) {
+    if (expr.op.type == TokenType::TOKEN_AND_AND || expr.op.type == TokenType::TOKEN_AND) {
         Value left = evaluate(*expr.left);
         if (!left.isTruthy()) {
             lastEvaluatedValue = left;
@@ -853,7 +927,7 @@ void Interpreter::visitBinaryExpr(BinaryExpr& expr) {
 
 void Interpreter::visitUnaryExpr(UnaryExpr& expr) {
     Value right = evaluate(*expr.right);
-    if (expr.op.type == TokenType::TOKEN_BANG) {
+    if (expr.op.type == TokenType::TOKEN_BANG || expr.op.type == TokenType::TOKEN_NOT) {
         lastEvaluatedValue = Value::makeBool(!right.isTruthy());
         return;
     }

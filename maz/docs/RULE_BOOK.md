@@ -542,25 +542,76 @@ display("Hello,", name)
   s = toString(100)
   ```
 
-### Rule 75: Conditions & Control Flow
-- **Break & Continue:**
+### Rule 75: Conditions & Control Flow (Enhanced Loop Control System & Timer)
+MAZ provides a comprehensive loop control system supporting basic, level-based, and labelled loop operations for both `for` and `while` loops, along with built-in `timer` variables.
+
+- **1. Basic `break` and `continue`:**
+  - `break` immediately terminates the nearest enclosing loop.
+  - `continue` skips to the next iteration of the nearest enclosing loop (executing the iteration expression first in a `for` loop).
   ```maz
   for (new i = 0, i < 10, i++) {
       if (i == 3) continue
       if (i == 7) break
-      display(i)
+      displayl(i)
   }
   ```
-- **Switch with Auto-Break:**
+
+- **2. Labelled Loops (`break label` & `continue label`):**
+  Loops can be labelled with an identifier followed by a colon (`label:`).
+  ```maz
+  outer: for (new i = 0, i < 5, i++) {
+      for (new j = 0, j < 5, j++) {
+          if (i == 2 and j == 2) {
+              break outer        // Terminates the outer loop
+          }
+          if (j == 1) {
+              continue outer     // Skips to next iteration of outer loop
+          }
+          displayl(i, j)
+      }
+  }
+  ```
+
+- **3. Level-Based Loop Control (`break N` & `continue N`):**
+  Enables multi-level loop breaking or continuing using a compile-time positive integer:
+  - `break 1` / `continue 1`: Innermost loop (identical to unadorned `break` / `continue`).
+  - `break 2` / `continue 2`: Enclosing 2nd level loop.
+  - `break 3` / `continue 3`: Enclosing 3rd level loop.
+  ```maz
+  for (new i = 0, i < 3, i++) {
+      for (new j = 0, j < 3, j++) {
+          for (new k = 0, k < 3, k++) {
+              if (k == 1) {
+                  break 2        // Breaks both innermost and 2nd enclosing loops
+              }
+          }
+      }
+  }
+  ```
+
+- **4. Built-in `timer` Variables:**
+  `timer` creates a high-precision live elapsed time variable initialized to 0.
+  - Defaults to `float` seconds: `timer time = 0` (or uninitialized `timer t` which auto-initializes to 0.0).
+  - Can be declared as an integer: `int timer sec = 0` (returns whole elapsed seconds).
+  - Can only be numeric; assigning a number updates the offset and resumes tracking.
+  ```maz
+  timer t             // Automatically starts at 0.0
+  int timer seconds = 0
+
+  displayl("Elapsed float: " + t)
+  displayl("Elapsed int seconds: " + seconds)
+  ```
+
+- **Switch with Auto-Break (Upcoming):**
   ```maz
   switch (day) {
       case 1:
-          display("Monday")
+          displayl("Monday")
       case 2:
-          display("Tuesday")
+          displayl("Tuesday")
           fallthrough
       default:
-          display("Other")
+          displayl("Other")
   }
   ```
 

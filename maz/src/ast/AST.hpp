@@ -44,6 +44,8 @@ class WhileStmt;
 class ForStmt;
 class FunctionStmt;
 class ReturnStmt;
+class BreakStmt;
+class ContinueStmt;
 class Program;
 
 class GlobalStmt;
@@ -71,6 +73,8 @@ public:
     virtual void visitForStmt(ForStmt& stmt) = 0;
     virtual void visitFunctionStmt(FunctionStmt& stmt) = 0;
     virtual void visitReturnStmt(ReturnStmt& stmt) = 0;
+    virtual void visitBreakStmt(BreakStmt& stmt) = 0;
+    virtual void visitContinueStmt(ContinueStmt& stmt) = 0;
     virtual void visitProgram(Program& program) = 0;
 };
 
@@ -173,9 +177,10 @@ public:
     bool isDyn{false};
     bool isNew{false};
     ValueType explicitType{ValueType::Null};
+    bool isTimer{false};
 
-    VarDeclStmt(Token n, ExprPtr init, bool c = false, bool d = false, bool nw = false, ValueType expType = ValueType::Null)
-        : name(std::move(n)), initializer(std::move(init)), isConst(c), isDyn(d), isNew(nw), explicitType(expType) {}
+    VarDeclStmt(Token n, ExprPtr init, bool c = false, bool d = false, bool nw = false, ValueType expType = ValueType::Null, bool timer = false)
+        : name(std::move(n)), initializer(std::move(init)), isConst(c), isDyn(d), isNew(nw), explicitType(expType), isTimer(timer) {}
 
     void accept(ASTVisitor& visitor) override { visitor.visitVarDeclStmt(*this); }
 };
@@ -222,25 +227,27 @@ public:
 
 class WhileStmt : public Stmt {
 public:
+    std::string label;
     ExprPtr condition;
     StmtPtr body;
 
-    WhileStmt(ExprPtr cond, StmtPtr b)
-        : condition(std::move(cond)), body(std::move(b)) {}
+    WhileStmt(ExprPtr cond, StmtPtr b, std::string lbl = "")
+        : label(std::move(lbl)), condition(std::move(cond)), body(std::move(b)) {}
 
     void accept(ASTVisitor& visitor) override { visitor.visitWhileStmt(*this); }
 };
 
 class ForStmt : public Stmt {
 public:
+    std::string label;
     bool hasNew{false};
     StmtPtr initializer; // e.g. VarDeclStmt or ExpressionStmt (can be null)
     ExprPtr condition;   // can be null
     ExprPtr update;      // can be null
     StmtPtr body;
 
-    ForStmt(bool isNew, StmtPtr init, ExprPtr cond, ExprPtr upd, StmtPtr b)
-        : hasNew(isNew), initializer(std::move(init)), condition(std::move(cond)),
+    ForStmt(bool isNew, StmtPtr init, ExprPtr cond, ExprPtr upd, StmtPtr b, std::string lbl = "")
+        : label(std::move(lbl)), hasNew(isNew), initializer(std::move(init)), condition(std::move(cond)),
           update(std::move(upd)), body(std::move(b)) {}
 
     void accept(ASTVisitor& visitor) override { visitor.visitForStmt(*this); }
@@ -267,6 +274,30 @@ public:
         : keyword(std::move(kw)), value(std::move(val)) {}
 
     void accept(ASTVisitor& visitor) override { visitor.visitReturnStmt(*this); }
+};
+
+class BreakStmt : public Stmt {
+public:
+    Token keyword;
+    int depth{1}; // 1-based loop depth (or 0 if label-based)
+    std::string label; // target label if specified
+
+    BreakStmt(Token kw, int d = 1, std::string lbl = "")
+        : keyword(std::move(kw)), depth(d), label(std::move(lbl)) {}
+
+    void accept(ASTVisitor& visitor) override { visitor.visitBreakStmt(*this); }
+};
+
+class ContinueStmt : public Stmt {
+public:
+    Token keyword;
+    int depth{1}; // 1-based loop depth (or 0 if label-based)
+    std::string label; // target label if specified
+
+    ContinueStmt(Token kw, int d = 1, std::string lbl = "")
+        : keyword(std::move(kw)), depth(d), label(std::move(lbl)) {}
+
+    void accept(ASTVisitor& visitor) override { visitor.visitContinueStmt(*this); }
 };
 
 class Program : public Stmt {

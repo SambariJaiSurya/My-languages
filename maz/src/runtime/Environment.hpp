@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <memory>
 #include <string>
-
+#include <chrono>
 #include <unordered_set>
 
 namespace maz {
@@ -16,6 +16,10 @@ struct Symbol {
     bool isConst{false};
     bool isDyn{false};
     bool isInitialized{false};
+    bool isTimer{false};
+    std::chrono::steady_clock::time_point timerStart;
+    double initialOffset{0.0};
+    bool isIntTimer{false};
 };
 
 class Environment : public std::enable_shared_from_this<Environment> {
@@ -23,6 +27,7 @@ public:
     explicit Environment(std::shared_ptr<Environment> parent = nullptr);
 
     void define(const std::string& name, Value value, bool isConst = false, bool isDyn = false, bool isInitialized = true, ValueType explicitType = ValueType::Null);
+    void defineTimer(const std::string& name, double initialOffset, bool isInt);
     void assign(const Token& name, Value value, bool isForce = false);
     void assignOrDeclareGlobal(const Token& name, Value value);
     void markGlobal(const std::string& name);

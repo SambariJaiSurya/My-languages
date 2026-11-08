@@ -36,6 +36,8 @@ public:
     void visitForStmt(ForStmt& stmt) override;
     void visitFunctionStmt(FunctionStmt& stmt) override;
     void visitReturnStmt(ReturnStmt& stmt) override;
+    void visitBreakStmt(BreakStmt& stmt) override;
+    void visitContinueStmt(ContinueStmt& stmt) override;
     void visitProgram(Program& program) override;
 
     std::shared_ptr<Environment> getGlobals() { return globals; }

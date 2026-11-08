@@ -1,0 +1,99 @@
+// Example 09: Rule 75 Loop Control Enhancement & Timer System
+
+displayl("=== Test 1: Basic break in for loop ===")
+for (new i = 0, i < 10, i++) {
+    if (i == 5) {
+        break
+    }
+    displayl("i = " + i)
+}
+
+displayl("\n=== Test 2: Basic continue in for loop ===")
+for (new i = 0, i < 6, i++) {
+    if (i == 2 or i == 4) {
+        continue
+    }
+    displayl("continue skip i = " + i)
+}
+
+displayl("\n=== Test 3: while loop break and continue ===")
+new count = 0
+while (count < 10) {
+    count++
+    if (count == 3) {
+        continue
+    }
+    if (count == 7) {
+        break
+    }
+    displayl("while count = " + count)
+}
+
+displayl("\n=== Test 4: break N (Level-based break) ===")
+for (new a = 0, a < 3, a++) {
+    for (new b = 0, b < 3, b++) {
+        for (new c = 0, c < 3, c++) {
+            if (c == 1) {
+                break 2
+            }
+            displayl("a=" + a + " b=" + b + " c=" + c)
+        }
+    }
+}
+
+displayl("\n=== Test 5: continue N (Level-based continue) ===")
+for (new x = 0, x < 2, x++) {
+    for (new y = 0, y < 2, y++) {
+        for (new z = 0, z < 3, z++) {
+            if (z == 1) {
+                continue 2
+            }
+            displayl("x=" + x + " y=" + y + " z=" + z)
+        }
+    }
+}
+
+displayl("\n=== Test 6: Labelled break (break outer) ===")
+outer: for (new i = 0, i < 5, i++) {
+    for (new j = 0, j < 5, j++) {
+        if (i == 2 and j == 2) {
+            break outer
+        }
+        displayl("outer break: i=" + i + " j=" + j)
+    }
+}
+
+displayl("\n=== Test 7: Labelled continue (continue outer) ===")
+outerLoop: for (new r = 0, r < 3, r++) {
+    for (new c = 0, c < 3, c++) {
+        if (c == 1) {
+            continue outerLoop
+        }
+        displayl("outer continue: r=" + r + " c=" + c)
+    }
+}
+
+displayl("\n=== Test 8: Mixed for and while loops with label ===")
+outerWhile: while (true) {
+    for (new k = 0, k < 5, k++) {
+        if (k == 3) {
+            break outerWhile
+        }
+        displayl("mixed loop k = " + k)
+    }
+}
+
+displayl("\n=== Test 9: Timer System ===")
+timer t
+displayl("Default timer t initial: " + (t >= 0.0))
+
+timer time = 0.0
+displayl("Float timer initial: " + (time >= 0.0))
+
+int timer sec = 0
+displayl("Int timer sec initial: " + sec)
+
+time = 10.5
+displayl("Timer after setting 10.5: " + (time >= 10.5))
+
+displayl("\n=== All Loop Control and Timer tests completed! ===")

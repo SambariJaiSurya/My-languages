@@ -39,6 +39,18 @@ public:
         : keyword(std::move(kw)), value(std::move(val)) {}
 };
 
+class LoopControlException : public std::exception {
+public:
+    enum Kind { Break, Continue };
+    Kind kind;
+    int depth; // Remaining nesting depth (1-based, decremented as it unwinds)
+    std::string label; // Empty if depth-based, otherwise specific loop label
+    Token token;
+
+    LoopControlException(Kind k, int d, std::string lbl, Token tok)
+        : kind(k), depth(d), label(std::move(lbl)), token(std::move(tok)) {}
+};
+
 inline void reportDiagnostic(const std::string& source, const SourceLocation& loc, const std::string& msg) {
     std::cerr << "\n[MAZ Diagnostic] " 
               << (loc.file.empty() ? "<input>" : loc.file) 

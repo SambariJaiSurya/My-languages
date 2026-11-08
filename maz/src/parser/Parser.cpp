@@ -30,6 +30,11 @@ const Token& Parser::peek() const {
     return tokens[current];
 }
 
+const Token& Parser::peekNext() const {
+    if (current + 1 >= tokens.size()) return tokens.back();
+    return tokens[current + 1];
+}
+
 const Token& Parser::previous() const {
     return tokens[current - 1];
 }
@@ -82,13 +87,25 @@ StmtPtr Parser::declaration() {
     if (match({TokenType::TOKEN_GLOBAL})) {
         return globalDeclaration();
     }
+    if (match({TokenType::TOKEN_TIMER})) {
+        return timerDeclaration(ValueType::Float);
+    }
     if (match({TokenType::TOKEN_TYPE_INT})) {
+        if (match({TokenType::TOKEN_TIMER})) {
+            return timerDeclaration(ValueType::Int);
+        }
         return typedDeclaration(ValueType::Int);
     }
     if (match({TokenType::TOKEN_TYPE_FLOAT})) {
+        if (match({TokenType::TOKEN_TIMER})) {
+            return timerDeclaration(ValueType::Float);
+        }
         return typedDeclaration(ValueType::Float);
     }
     if (match({TokenType::TOKEN_TYPE_DOUBLE})) {
+        if (match({TokenType::TOKEN_TIMER})) {
+            return timerDeclaration(ValueType::Float);
+        }
         return typedDeclaration(ValueType::Float);
     }
     if (match({TokenType::TOKEN_TYPE_STRING})) {
@@ -184,6 +201,29 @@ StmtPtr Parser::typedDeclaration(ValueType type) {
     return std::make_shared<MultiVarDeclStmt>(std::move(decls));
 }
 
+StmtPtr Parser::timerDeclaration(ValueType type) {
+    std::vector<std::shared_ptr<VarDeclStmt>> decls;
+    do {
+        Token name = consume(TokenType::TOKEN_IDENTIFIER, "Expected timer variable name.");
+        ExprPtr initializer = nullptr;
+        if (match({TokenType::TOKEN_ASSIGN})) {
+            initializer = expression();
+        } else {
+            if (type == ValueType::Int) {
+                initializer = std::make_shared<LiteralExpr>(Value((int64_t)0), name.location);
+            } else {
+                initializer = std::make_shared<LiteralExpr>(Value(0.0), name.location);
+            }
+        }
+        decls.push_back(std::make_shared<VarDeclStmt>(name, initializer, false, false, false, type, true));
+    } while (match({TokenType::TOKEN_COMMA}));
+
+    if (decls.size() == 1) {
+        return decls[0];
+    }
+    return std::make_shared<MultiVarDeclStmt>(std::move(decls));
+}
+
 StmtPtr Parser::functionDeclaration() {
     Token name = consume(TokenType::TOKEN_IDENTIFIER, "Expected function name.");
     consume(TokenType::TOKEN_LPAREN, "Expected '(' after function name.");
@@ -202,8 +242,13 @@ StmtPtr Parser::functionDeclaration() {
     consume(TokenType::TOKEN_RPAREN, "Expected ')' after parameters.");
     skipNewlines();
 
+    auto prevLoopStack = std::move(loopStack);
+    loopStack.clear();
+
     consume(TokenType::TOKEN_LBRACE, "Expected '{' before function body.");
     std::shared_ptr<BlockStmt> body = blockStatement();
+
+    loopStack = std::move(prevLoopStack);
 
     return std::make_shared<FunctionStmt>(name, std::move(parameters), body);
 }
@@ -214,10 +259,16 @@ StmtPtr Parser::statement() {
         return ifStatement();
     }
     if (match({TokenType::TOKEN_WHILE})) {
-        return whileStatement();
+        return whileStatement("");
     }
     if (match({TokenType::TOKEN_FOR})) {
-        return forStatement();
+        return forStatement("");
+    }
+    if (match({TokenType::TOKEN_BREAK})) {
+        return breakStatement();
+    }
+    if (match({TokenType::TOKEN_CONTINUE})) {
+        return continueStatement();
     }
     if (match({TokenType::TOKEN_RETURN})) {
         return returnStatement();
@@ -225,6 +276,21 @@ StmtPtr Parser::statement() {
     if (match({TokenType::TOKEN_LBRACE})) {
         return blockStatement();
     }
+
+    // Labelled loops: identifier followed by ':' then 'for' or 'while'
+    if (check(TokenType::TOKEN_IDENTIFIER) && peekNext().type == TokenType::TOKEN_COLON) {
+        Token labelTok = advance(); // identifier
+        advance(); // colon ':'
+        skipNewlines();
+        if (match({TokenType::TOKEN_FOR})) {
+            return forStatement(labelTok.lexeme);
+        } else if (match({TokenType::TOKEN_WHILE})) {
+            return whileStatement(labelTok.lexeme);
+        } else {
+            throw MazException(labelTok.location, "Label '" + labelTok.lexeme + "' must be followed by a loop (for or while).");
+        }
+    }
+
     return expressionStatement();
 }
 
@@ -246,18 +312,38 @@ StmtPtr Parser::ifStatement() {
     return std::make_shared<IfStmt>(condition, thenBranch, elseBranch);
 }
 
-StmtPtr Parser::whileStatement() {
+StmtPtr Parser::whileStatement(std::string label) {
+    if (!label.empty()) {
+        for (const auto& scope : loopStack) {
+            if (scope.label == label) {
+                throw MazException(previous().location, "Duplicate loop label '" + label + "' in enclosing loops.");
+            }
+        }
+    }
+    loopStack.push_back({label});
+
     consume(TokenType::TOKEN_LPAREN, "Expected '(' after 'while'.");
     ExprPtr condition = expression();
     consume(TokenType::TOKEN_RPAREN, "Expected ')' after while condition.");
     skipNewlines();
 
     StmtPtr body = statement();
-    return std::make_shared<WhileStmt>(condition, body);
+
+    loopStack.pop_back();
+    return std::make_shared<WhileStmt>(condition, body, label);
 }
 
 // Rule 7: Three-part loop with comma separation and 'new' scoping
-StmtPtr Parser::forStatement() {
+StmtPtr Parser::forStatement(std::string label) {
+    if (!label.empty()) {
+        for (const auto& scope : loopStack) {
+            if (scope.label == label) {
+                throw MazException(previous().location, "Duplicate loop label '" + label + "' in enclosing loops.");
+            }
+        }
+    }
+    loopStack.push_back({label});
+
     consume(TokenType::TOKEN_LPAREN, "Expected '(' after 'for'.");
 
     bool hasNew = false;
@@ -291,7 +377,99 @@ StmtPtr Parser::forStatement() {
     skipNewlines();
 
     StmtPtr body = statement();
-    return std::make_shared<ForStmt>(hasNew, initializer, condition, update, body);
+
+    loopStack.pop_back();
+    return std::make_shared<ForStmt>(hasNew, initializer, condition, update, body, label);
+}
+
+StmtPtr Parser::breakStatement() {
+    Token keyword = previous();
+    if (loopStack.empty()) {
+        throw MazException(keyword.location, "Cannot use 'break' outside of a loop.");
+    }
+
+    // Check if argument follows on the same line
+    if (!isAtEnd() && peek().location.line == keyword.location.line &&
+        !check(TokenType::TOKEN_NEWLINE) && !check(TokenType::TOKEN_SEMICOLON) &&
+        !check(TokenType::TOKEN_RBRACE)) {
+
+        if (check(TokenType::TOKEN_INT)) {
+            Token intTok = advance();
+            int64_t depth = std::stoll(intTok.lexeme);
+            if (depth <= 0) {
+                throw MazException(intTok.location, "Loop control depth must be a positive integer (got " + std::to_string(depth) + ").");
+            }
+            if (static_cast<size_t>(depth) > loopStack.size()) {
+                throw MazException(intTok.location, "Loop control depth " + std::to_string(depth) + " exceeds the number of enclosing loops (" + std::to_string(loopStack.size()) + ").");
+            }
+            return std::make_shared<BreakStmt>(keyword, static_cast<int>(depth), "");
+        } else if (check(TokenType::TOKEN_MINUS)) {
+            Token minusTok = advance();
+            throw MazException(minusTok.location, "Loop control depth must be a positive integer.");
+        } else if (check(TokenType::TOKEN_IDENTIFIER)) {
+            Token labelTok = advance();
+            bool found = false;
+            for (const auto& scope : loopStack) {
+                if (scope.label == labelTok.lexeme) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw MazException(labelTok.location, "Undefined loop label '" + labelTok.lexeme + "'.");
+            }
+            return std::make_shared<BreakStmt>(keyword, 0, labelTok.lexeme);
+        } else {
+            throw MazException(peek().location, "Numerical loop-control arguments must be compile-time integer constants.");
+        }
+    }
+
+    return std::make_shared<BreakStmt>(keyword, 1, "");
+}
+
+StmtPtr Parser::continueStatement() {
+    Token keyword = previous();
+    if (loopStack.empty()) {
+        throw MazException(keyword.location, "Cannot use 'continue' outside of a loop.");
+    }
+
+    // Check if argument follows on the same line
+    if (!isAtEnd() && peek().location.line == keyword.location.line &&
+        !check(TokenType::TOKEN_NEWLINE) && !check(TokenType::TOKEN_SEMICOLON) &&
+        !check(TokenType::TOKEN_RBRACE)) {
+
+        if (check(TokenType::TOKEN_INT)) {
+            Token intTok = advance();
+            int64_t depth = std::stoll(intTok.lexeme);
+            if (depth <= 0) {
+                throw MazException(intTok.location, "Loop control depth must be a positive integer (got " + std::to_string(depth) + ").");
+            }
+            if (static_cast<size_t>(depth) > loopStack.size()) {
+                throw MazException(intTok.location, "Loop control depth " + std::to_string(depth) + " exceeds the number of enclosing loops (" + std::to_string(loopStack.size()) + ").");
+            }
+            return std::make_shared<ContinueStmt>(keyword, static_cast<int>(depth), "");
+        } else if (check(TokenType::TOKEN_MINUS)) {
+            Token minusTok = advance();
+            throw MazException(minusTok.location, "Loop control depth must be a positive integer.");
+        } else if (check(TokenType::TOKEN_IDENTIFIER)) {
+            Token labelTok = advance();
+            bool found = false;
+            for (const auto& scope : loopStack) {
+                if (scope.label == labelTok.lexeme) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw MazException(labelTok.location, "Undefined loop label '" + labelTok.lexeme + "'.");
+            }
+            return std::make_shared<ContinueStmt>(keyword, 0, labelTok.lexeme);
+        } else {
+            throw MazException(peek().location, "Numerical loop-control arguments must be compile-time integer constants.");
+        }
+    }
+
+    return std::make_shared<ContinueStmt>(keyword, 1, "");
 }
 
 StmtPtr Parser::returnStatement() {
@@ -338,9 +516,10 @@ ExprPtr Parser::assignment() {
         throw MazException(equals.location, "Invalid assignment target.");
     }
 
-    // Compound assignments: +=, -=, *=, /=
+    // Compound assignments: +=, -=, *=, /=, %=
     if (match({TokenType::TOKEN_PLUS_ASSIGN, TokenType::TOKEN_MINUS_ASSIGN,
-               TokenType::TOKEN_STAR_ASSIGN, TokenType::TOKEN_SLASH_ASSIGN})) {
+               TokenType::TOKEN_STAR_ASSIGN, TokenType::TOKEN_SLASH_ASSIGN,
+               TokenType::TOKEN_PERCENT_ASSIGN})) {
         Token opToken = previous();
         ExprPtr value = assignment();
 
@@ -349,7 +528,8 @@ ExprPtr Parser::assignment() {
             if (opToken.type == TokenType::TOKEN_PLUS_ASSIGN) binaryOpType = TokenType::TOKEN_PLUS;
             else if (opToken.type == TokenType::TOKEN_MINUS_ASSIGN) binaryOpType = TokenType::TOKEN_MINUS;
             else if (opToken.type == TokenType::TOKEN_STAR_ASSIGN) binaryOpType = TokenType::TOKEN_STAR;
-            else binaryOpType = TokenType::TOKEN_SLASH;
+            else if (opToken.type == TokenType::TOKEN_SLASH_ASSIGN) binaryOpType = TokenType::TOKEN_SLASH;
+            else binaryOpType = TokenType::TOKEN_PERCENT;
 
             Token binaryToken(binaryOpType, opToken.lexeme.substr(0, 1), opToken.location);
             ExprPtr binaryExpr = std::make_shared<BinaryExpr>(expr, binaryToken, value);
@@ -367,7 +547,7 @@ ExprPtr Parser::assignment() {
 
 ExprPtr Parser::logicalOr() {
     ExprPtr expr = logicalAnd();
-    while (match({TokenType::TOKEN_OR_OR})) {
+    while (match({TokenType::TOKEN_OR_OR, TokenType::TOKEN_OR})) {
         Token op = previous();
         ExprPtr right = logicalAnd();
         expr = std::make_shared<BinaryExpr>(expr, op, right);
@@ -377,7 +557,7 @@ ExprPtr Parser::logicalOr() {
 
 ExprPtr Parser::logicalAnd() {
     ExprPtr expr = equality();
-    while (match({TokenType::TOKEN_AND_AND})) {
+    while (match({TokenType::TOKEN_AND_AND, TokenType::TOKEN_AND})) {
         Token op = previous();
         ExprPtr right = equality();
         expr = std::make_shared<BinaryExpr>(expr, op, right);
@@ -427,7 +607,7 @@ ExprPtr Parser::factor() {
 }
 
 ExprPtr Parser::unary() {
-    if (match({TokenType::TOKEN_BANG, TokenType::TOKEN_MINUS})) {
+    if (match({TokenType::TOKEN_BANG, TokenType::TOKEN_NOT, TokenType::TOKEN_MINUS})) {
         Token op = previous();
         ExprPtr right = unary();
         return std::make_shared<UnaryExpr>(op, right, true);

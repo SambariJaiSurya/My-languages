@@ -31,6 +31,12 @@ const std::unordered_map<std::string, TokenType> Lexer::keywords = {
     {"async", TokenType::TOKEN_ASYNC},
     {"await", TokenType::TOKEN_AWAIT},
     {"use", TokenType::TOKEN_USE},
+    {"break", TokenType::TOKEN_BREAK},
+    {"continue", TokenType::TOKEN_CONTINUE},
+    {"timer", TokenType::TOKEN_TIMER},
+    {"and", TokenType::TOKEN_AND},
+    {"or", TokenType::TOKEN_OR},
+    {"not", TokenType::TOKEN_NOT},
     {"int", TokenType::TOKEN_TYPE_INT},
     {"float", TokenType::TOKEN_TYPE_FLOAT},
     {"double", TokenType::TOKEN_TYPE_DOUBLE},
@@ -102,6 +108,8 @@ bool Lexer::canEndStatement(TokenType type) const {
         case TokenType::TOKEN_PLUS_PLUS:
         case TokenType::TOKEN_MINUS_MINUS:
         case TokenType::TOKEN_RETURN:
+        case TokenType::TOKEN_BREAK:
+        case TokenType::TOKEN_CONTINUE:
             return true;
         default:
             return false;
@@ -156,7 +164,8 @@ void Lexer::scanToken() {
             break;
 
         case '%':
-            addToken(TokenType::TOKEN_PERCENT);
+            if (match('=')) addToken(TokenType::TOKEN_PERCENT_ASSIGN);
+            else addToken(TokenType::TOKEN_PERCENT);
             break;
 
         case '!':

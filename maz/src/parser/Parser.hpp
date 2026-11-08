@@ -19,12 +19,18 @@ private:
     // Helper navigators
     bool isAtEnd() const;
     const Token& peek() const;
+    const Token& peekNext() const;
     const Token& previous() const;
     Token advance();
     bool check(TokenType type) const;
     bool match(std::initializer_list<TokenType> types);
     Token consume(TokenType type, const std::string& message);
     void skipNewlines();
+
+    struct LoopScope {
+        std::string label;
+    };
+    std::vector<LoopScope> loopStack;
 
     // Statements
     StmtPtr declaration();
@@ -33,12 +39,15 @@ private:
     StmtPtr newDeclaration();
     StmtPtr globalDeclaration();
     StmtPtr typedDeclaration(ValueType type);
+    StmtPtr timerDeclaration(ValueType type);
     StmtPtr functionDeclaration();
     StmtPtr statement();
     StmtPtr ifStatement();
-    StmtPtr whileStatement();
-    StmtPtr forStatement();
+    StmtPtr whileStatement(std::string label = "");
+    StmtPtr forStatement(std::string label = "");
     StmtPtr returnStatement();
+    StmtPtr breakStatement();
+    StmtPtr continueStatement();
     std::shared_ptr<BlockStmt> blockStatement();
     StmtPtr expressionStatement();
 

@@ -43,6 +43,14 @@ enum class TokenType {
     TOKEN_ASYNC,
     TOKEN_AWAIT,
     TOKEN_USE,
+    TOKEN_BREAK,
+    TOKEN_CONTINUE,
+    TOKEN_TIMER,
+
+    // Word logical operators
+    TOKEN_AND,           // and (alias for &&)
+    TOKEN_OR,            // or  (alias for ||)
+    TOKEN_NOT,           // not (alias for !)
 
     // Type keywords
     TOKEN_TYPE_INT,
@@ -65,6 +73,7 @@ enum class TokenType {
     TOKEN_MINUS_ASSIGN,  // -=
     TOKEN_STAR_ASSIGN,   // *=
     TOKEN_SLASH_ASSIGN,  // /=
+    TOKEN_PERCENT_ASSIGN,// %=
 
     // Comparison & Logic
     TOKEN_EQUAL_EQUAL,   // ==
@@ -126,6 +135,12 @@ inline std::string tokenTypeToString(TokenType type) {
         case TokenType::TOKEN_ASYNC: return "async";
         case TokenType::TOKEN_AWAIT: return "await";
         case TokenType::TOKEN_USE: return "use";
+        case TokenType::TOKEN_BREAK: return "break";
+        case TokenType::TOKEN_CONTINUE: return "continue";
+        case TokenType::TOKEN_TIMER: return "timer";
+        case TokenType::TOKEN_AND: return "and";
+        case TokenType::TOKEN_OR: return "or";
+        case TokenType::TOKEN_NOT: return "not";
         case TokenType::TOKEN_PLUS: return "+";
         case TokenType::TOKEN_MINUS: return "-";
         case TokenType::TOKEN_STAR: return "*";
@@ -138,6 +153,7 @@ inline std::string tokenTypeToString(TokenType type) {
         case TokenType::TOKEN_MINUS_ASSIGN: return "-=";
         case TokenType::TOKEN_STAR_ASSIGN: return "*=";
         case TokenType::TOKEN_SLASH_ASSIGN: return "/=";
+        case TokenType::TOKEN_PERCENT_ASSIGN: return "%=";
         case TokenType::TOKEN_EQUAL_EQUAL: return "==";
         case TokenType::TOKEN_BANG_EQUAL: return "!=";
         case TokenType::TOKEN_LESS: return "<";

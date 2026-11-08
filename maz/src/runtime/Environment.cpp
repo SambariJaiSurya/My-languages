@@ -14,6 +14,18 @@ void Environment::define(const std::string& name, Value value, bool isConst, boo
     values[name] = sym;
 }
 
+void Environment::defineTimer(const std::string& name, double initialOffset, bool isInt) {
+    Symbol sym;
+    sym.isTimer = true;
+    sym.timerStart = std::chrono::steady_clock::now();
+    sym.initialOffset = initialOffset;
+    sym.isIntTimer = isInt;
+    sym.fixedType = isInt ? ValueType::Int : ValueType::Float;
+    sym.isInitialized = true;
+    sym.value = isInt ? Value(static_cast<int64_t>(initialOffset)) : Value(initialOffset);
+    values[name] = sym;
+}
+
 void Environment::markGlobal(const std::string& name) {
     globalBindings.insert(name);
 }
@@ -36,6 +48,16 @@ void Environment::assign(const Token& name, Value value, bool isForce) {
 
     auto it = values.find(name.lexeme);
     if (it != values.end()) {
+        if (it->second.isTimer) {
+            if (!value.isNumber()) {
+                throw MazException(name.location, "Type Error: Timer variable '" + name.lexeme + "' can only be assigned a number.");
+            }
+            it->second.timerStart = std::chrono::steady_clock::now();
+            it->second.initialOffset = value.asFloat();
+            it->second.value = it->second.isIntTimer ? Value(static_cast<int64_t>(it->second.initialOffset)) : Value(it->second.initialOffset);
+            return;
+        }
+
         if (it->second.isConst && it->second.isInitialized) {
             throw MazException(name.location, "Error: Cannot modify a constant variable '" + name.lexeme + "'.");
         }
@@ -90,6 +112,16 @@ Value Environment::get(const Token& name) {
     if (it != values.end()) {
         if (!it->second.isInitialized) {
             throw MazException(name.location, "Error: Variable '" + name.lexeme + "' may be uninitialized.");
+        }
+        if (it->second.isTimer) {
+            auto now = std::chrono::steady_clock::now();
+            double elapsed = std::chrono::duration<double>(now - it->second.timerStart).count();
+            double total = it->second.initialOffset + elapsed;
+            if (it->second.isIntTimer) {
+                return Value(static_cast<int64_t>(total));
+            } else {
+                return Value(total);
+            }
         }
         return it->second.value;
     }

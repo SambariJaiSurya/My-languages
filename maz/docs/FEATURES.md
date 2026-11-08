@@ -22,7 +22,8 @@
 | Primitive Types (`int`, `float`, `string`, `bool`, `null`) | 🟢 Implemented | v0.1 | Types | Fundamental value representations |
 | Arithmetic Operators (`+`, `-`, `*`, `/`, `%`) | 🟢 Implemented | v0.1 | Operators | Standard arithmetic computations |
 | Comparison Operators (`==`, `!=`, `<`, `<=`, `>`, `>=`) | 🟢 Implemented | v0.1 | Operators | Relational equality and ordering |
-| Logical Operators (`&&`, `||`, `!`) | 🟢 Implemented | v0.1 | Operators | Boolean conjunction, disjunction, and negation |
+| Logical Operators (`&&`, `||`, `!`, `and`, `or`, `not`) | 🟢 Implemented | v0.1 | Operators | Boolean conjunction, disjunction, and negation (symbols & words) |
+| Compound Assignments (`+=`, `-=`, `*=`, `/=`, `%=`) | 🟢 Implemented | v0.1 | Operators | In-place variable assignment and computation |
 | Increment / Decrement (`++`, `--`) | 🟢 Implemented | v0.1 | Operators | Fast pre/post variable mutation |
 | String Concatenation (`+`) | 🟢 Implemented | v0.1 | Strings | Combining strings and values using `+` |
 | Output Functions (`display`, `displayl`) | 🟢 Implemented | v0.1 | I/O | `display()` prints without newline, `displayl()` prints with newline |
@@ -30,6 +31,8 @@
 | Conditions (`if`, `else if`, `else`) | 🟢 Implemented | v0.1 | Control Flow | C++ style branch evaluation |
 | Three-Part Loop with Commas (`for`) | 🟢 Implemented | v0.1 | Control Flow | `for (new i = 0, i < 10, i++)` with `new` scoping |
 | While Loops (`while`) | 🟢 Implemented | v0.1 | Control Flow | Condition-driven iteration |
+| Enhanced Loop Control (`break`, `continue`, `label:`, `break/continue N`) | 🟢 Implemented | v0.1 | Control Flow | Rule 75: Multi-level, labelled, and basic loop unwinding |
+| Built-in Live Timer Variables (`timer`, `int timer`) | 🟢 Implemented | v0.1 | Variables | Elapsed execution time tracking with auto-initialization |
 | Function Declarations (`def`) | 🟢 Implemented | v0.1 | Functions | Inferred return types and closures |
 | Default Parameters | 🟢 Implemented | v0.1 | Functions | Functions with optional parameters having default values |
 | Comments (`//` and `/* */`) | 🟢 Implemented | v0.1 | Lexer | Single-line and multi-line comments |

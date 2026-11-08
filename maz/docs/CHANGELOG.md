@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.0-alpha] - 2026-11-08
+
+### Added
+- **Rule 75 Enhanced Loop Control System:**
+  - Basic `break` and `continue` statements for both `for` and `while` loops.
+  - Multi-level loop control: `break N` and `continue N` for unwinding/continuing N enclosing loop levels.
+  - Labelled loops: `label: for (...)` and `label: while (...)` with `break label` and `continue label`.
+  - Strict compile-time validation: ensures loop depths are positive compile-time integer constants <= active loop count, labels exist and identify enclosing loops without duplicates, and forbids loop control outside loop contexts.
+  - Correct execution of `for` update expressions after `continue`.
+- **Live Timer Variables:**
+  - `timer <name> [= init]` creates a live float timer variable tracking elapsed execution time. Defaults to 0.0 if uninitialized (`timer t`).
+  - `int timer <name> [= init]` creates an integer timer tracking whole elapsed seconds.
+  - Strictly numeric; assigning a number updates the offset and resumes tracking.
+- **Word Logical Operators & Compound Assignment:**
+  - `and`, `or`, and `not` supported as first-class language keywords with short-circuit evaluation.
+  - `+=`, `-=`, `*=`, `/=`, `%=` compound assignment operators.
+
 ## [0.1.0-alpha] - 2026-11-07
 
 ### Added
