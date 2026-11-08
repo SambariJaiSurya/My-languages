@@ -72,7 +72,7 @@
             "patterns": [
                 {
                     "name": "support.function.builtin.maz",
-                    "match": "\\b(display|clock|input|inputInt|inputFloat|inputBool|inputString)\\b"
+                    "match": "\\b(display|clock|input|inputint|inputfloat|inputbool|inputstring|inputInt|inputFloat|inputBool|inputString)\\b"
                 }
             ]
         },

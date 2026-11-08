@@ -1,17 +1,17 @@
-// MAZ Example 06: Rule 73 - Built-in Input System
+// MAZ Example 06: Rule 73 - Built-in Input System (lowercase)
 
 display("=== Testing MAZ Input System ===")
 
-name = inputString("Enter your name: ")
+name = inputstring("Enter your name: ")
 display("Hello,", name)
 
-age = inputInt("Enter your age: ")
+age = inputint("Enter your age: ")
 display("In 5 years, you will be:", age + 5)
 
-height = inputFloat("Enter your height: ")
+height = inputfloat("Enter your height: ")
 display("Your height is:", height)
 
-isStudent = inputBool("Are you a student? (true/false): ")
+isStudent = inputbool("Are you a student? (true/false): ")
 if (isStudent) {
     display("Status: Active Student")
 } else {
@@ -22,3 +22,4 @@ data = input("Enter anything: ")
 display("Raw input was:", data)
 
 display("=== All Input System tests completed! ===")
+

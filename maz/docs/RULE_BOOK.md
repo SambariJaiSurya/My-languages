@@ -470,30 +470,30 @@ data = input("Enter anything: ")
 display("You entered:", data)
 ```
 
-#### 2. Strict Integer Input: `inputInt()`
+#### 2. Strict Integer Input: `inputint()`
 ```maz
-age = inputInt("Enter your age: ")
+age = inputint("Enter your age: ")
 display("In 5 years:", age + 5)
 ```
 
-#### 3. Strict Floating-Point Input: `inputFloat()`
+#### 3. Strict Floating-Point Input: `inputfloat()`
 ```maz
-height = inputFloat("Enter your height: ")
+height = inputfloat("Enter your height: ")
 display("Height:", height)
 ```
 
-#### 4. Strict Boolean Input: `inputBool()`
+#### 4. Strict Boolean Input: `inputbool()`
 Accepts `"true"` or `"false"` (case-insensitive); throws error otherwise.
 ```maz
-isStudent = inputBool("Are you a student? ")
+isStudent = inputbool("Are you a student? ")
 if (isStudent) {
     display("Student Discount Applied")
 }
 ```
 
-#### 5. Strict String Input: `inputString()`
+#### 5. Strict String Input: `inputstring()`
 ```maz
-name = inputString("Enter your full name: ")
+name = inputstring("Enter your full name: ")
 display("Hello,", name)
 ```
 
@@ -690,3 +690,4 @@ display("Hello,", name)
 - **Sandboxed Execution & Safe Defaults:**
   - Secure permission checks on disk/network operations.
   - Cross-platform byte-order and architecture abstractions.
+
