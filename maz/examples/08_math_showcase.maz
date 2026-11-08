@@ -1,0 +1,50 @@
+// MAZ Example 08: Standard Mathematical Library Showcase
+
+display("=== 1. Basic Functions & Constants ===")
+display("PI =", PI)
+display("E =", E)
+display("abs(-42) =", abs(-42))
+display("min(5, 8) =", min(5, 8))
+display("max(5, 8) =", max(5, 8))
+display("pow(2, 5) =", pow(2, 5))
+display("sqrt(144) =", sqrt(144))
+display("cbrt(27) =", cbrt(27))
+display("hypot(3, 4) =", hypot(3, 4))
+display("clamp(15, 0, 10) =", clamp(15, 0, 10))
+
+display("=== 2. Rounding & Conversion ===")
+display("round(4.7) =", round(4.7))
+display("floor(4.9) =", floor(4.9))
+display("ceil(4.1) =", ceil(4.1))
+display("trunc(4.9) =", trunc(4.9))
+display("round_to(3.14159, 2) =", round_to(3.14159, 2))
+display("is_integer(5.0) =", is_integer(5.0))
+display("is_integer(5.25) =", is_integer(5.25))
+
+display("=== 3. Trigonometry ===")
+float angleDeg = 90.0
+float angleRad = radians(angleDeg)
+display("sin(radians(90)) =", sin(angleRad))
+display("cos(radians(0)) =", cos(radians(0.0)))
+display("degrees(PI) =", degrees(PI))
+
+display("=== 4. Logarithms & Exponentials ===")
+display("exp(2) =", exp(2.0))
+display("log10(100) =", log10(100.0))
+display("log2(256) =", log2(256.0))
+
+display("=== 5. Number Theory & Combinatorics ===")
+display("gcd(48, 18) =", gcd(48, 18))
+display("lcm(12, 18) =", lcm(12, 18))
+display("factorial(5) =", factorial(5))
+display("is_prime(29) =", is_prime(29))
+display("is_prime(30) =", is_prime(30))
+display("fibonacci(10) =", fibonacci(10))
+display("nCr(5, 2) =", nCr(5, 2))
+display("nPr(5, 2) =", nPr(5, 2))
+display("mod_pow(3, 4, 5) =", mod_pow(3, 4, 5))
+
+display("=== 6. Bitwise Mathematics ===")
+display("popcount(29) =", popcount(29)) // 29 = 11101 in binary -> 4 set bits
+
+display("=== All Math Tests Executed Successfully! ===")

@@ -49,6 +49,7 @@ struct Value {
     Value(std::shared_ptr<MazFunction> fn) : type(ValueType::Function), as(std::move(fn)) {}
     Value(NativeFn fn) : type(ValueType::NativeFunction), as(std::move(fn)) {}
 
+    static Value makeNative(NativeFn fn) { return Value(std::move(fn)); }
     static Value makeNull() { return Value(); }
     static Value makeBool(bool b) { return Value(b); }
 
